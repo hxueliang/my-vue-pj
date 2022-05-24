@@ -23,6 +23,11 @@ const routes = [
     name: 'Dispatch',
     component: () => import(/* webpackChunkName: "dispatch" */ '../views/Dispatch.vue')
   },
+  {
+    path: '/hoc',
+    name: 'Hoc',
+    component: () => import(/* webpackChunkName: "hoc" */ '../views/Hoc.vue')
+  },
 ]
 
 const router = new VueRouter({
