@@ -28,6 +28,11 @@ const routes = [
     name: 'Hoc',
     component: () => import(/* webpackChunkName: "hoc" */ '../views/Hoc.vue')
   },
+  {
+    path: '/renderless',
+    name: 'Renderless',
+    component: () => import(/* webpackChunkName: "renderless" */ '../views/Renderless.vue')
+  },
 ]
 
 const router = new VueRouter({

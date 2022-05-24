@@ -5,6 +5,7 @@
       <router-link to="/directive">Directive</router-link>|
       <router-link to="/dispatch">Dispatch</router-link>|
       <router-link to="/HOC">HOC</router-link>|
+      <router-link to="/renderless">Renderless</router-link>|
     </div>
     <router-view />
   </div>
