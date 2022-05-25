@@ -33,6 +33,11 @@ const routes = [
     name: 'Renderless',
     component: () => import(/* webpackChunkName: "renderless" */ '../views/Renderless.vue')
   },
+  {
+    path: '/computedWatch',
+    name: 'ComputedWatch',
+    component: () => import(/* webpackChunkName: "computedWatch" */ '../views/ComputedWatch.vue')
+  },
 ]
 
 const router = new VueRouter({

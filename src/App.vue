@@ -6,6 +6,7 @@
       <router-link to="/dispatch">Dispatch</router-link>|
       <router-link to="/HOC">HOC</router-link>|
       <router-link to="/renderless">Renderless</router-link>|
+      <router-link to="/computedWatch">ComputedWatch</router-link>|
     </div>
     <router-view />
   </div>
