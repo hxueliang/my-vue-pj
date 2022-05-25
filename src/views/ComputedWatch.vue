@@ -12,10 +12,23 @@ export default {
     init() {
 
       let active;
+
+      let effect = (fn, options = {}) => {
+        let effect = (...args) => {
+          try {
+            active = effect;
+            return fn(...args);
+          } finally {
+            active = null
+          }
+        }
+        effect.options = options;
+        return effect;
+      }
+
       let watchEffect = cb => {
-        active = cb;
-        active();
-        active = null
+        let runer = effect(cb);
+        runer()
       };
 
       let queue = [];
@@ -42,7 +55,10 @@ export default {
           }
         }
         notify() {
-          this.deps.forEach(dep => queueJob(dep));
+          this.deps.forEach(dep => {
+            queueJob(dep);
+            dep.options && dep.options.schedular && dep.options.schedular();
+          })
         }
       }
       let ref = initValue => {
@@ -63,9 +79,22 @@ export default {
       // computed
       let computed = fn => {
         let value;
+        let dirty = true;
+
+        let runer = effect(fn, {
+          schedular: () => {
+            if(!dirty) {
+              dirty = true;
+            }
+          }
+        });
+
         return {
           get value() {
-            value = fn();
+            if (dirty) {
+              value = runer();
+              dirty = false;
+            }
             return value;
           }
         }
