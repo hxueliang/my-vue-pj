@@ -60,13 +60,26 @@ export default {
         })
       }
 
+      // computed
+      let computed = fn => {
+        let value;
+        return {
+          get value() {
+            value = fn();
+            return value;
+          }
+        }
+      }
+
       let count = ref(0);
+      let computedValue = computed(() => count.value + 3);
+
       document.getElementById('add').addEventListener('click', function() {
         count.value++;
       })
       let str = '';
       watchEffect(() => {
-        str = `hello ${count.value}`;
+        str = `hello ${count.value} ${computedValue.value}`;
         console.log(str); // 输出1次，说明页面只浸染了1次
         document.getElementById('text').innerText = str;
       })
