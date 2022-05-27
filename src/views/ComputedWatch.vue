@@ -101,22 +101,28 @@ export default {
       }
 
       let watch = (source, cb, options = {}) => {
-        options
+        const { immediate } = options;
         let getter = () => {
           return source();
         }
         let oldValue;
         const runner = effect(getter, {
-          schedular: () => {
-            let newValue = runner();
-            if (newValue !== oldValue) {
-              cb(newValue, oldValue);
-              oldValue = newValue;
-            }
-          }
+          schedular: () => applyCb()
         })
 
-        oldValue = runner();
+        const applyCb = () => {
+          let newValue = runner();
+          if (newValue !== oldValue) {
+            cb(newValue, oldValue);
+            oldValue = newValue;
+          }
+        }
+
+        if (immediate) {
+          applyCb();
+        } else {
+          oldValue = runner();
+        }
       }
 
       let count = ref(0);
@@ -135,7 +141,8 @@ export default {
         () => count.value,
         (newValue, oldValue) => {
           console.log(newValue, oldValue);
-        }
+        },
+        { immediate: true }
       )
     }
   },
