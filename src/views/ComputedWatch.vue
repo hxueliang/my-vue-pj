@@ -23,12 +23,26 @@ export default {
           }
         }
         effect.options = options;
+        effect.deps = [];
         return effect;
+      }
+
+      let cleanUpEffect = effect => {
+        const { deps } = effect;
+        if (deps.length) {
+          for (let i = 0; i < deps.length; i++) {
+            deps[i].delete(effect);
+          }
+        }
       }
 
       let watchEffect = cb => {
         let runer = effect(cb);
-        runer()
+        runer();
+
+        return () => {
+          cleanUpEffect(runer);
+        }
       };
 
       let queue = [];
@@ -52,6 +66,7 @@ export default {
         depend() {
           if (active) {
             this.deps.add(active);
+            active.deps.push(this.deps);
           }
         }
         notify() {
@@ -132,11 +147,16 @@ export default {
         count.value++;
       })
       let str = '';
-      watchEffect(() => {
+      let stop = watchEffect(() => {
         str = `hello ${count.value} ${computedValue.value}`;
         console.log(str); // 输出1次，说明页面只浸染了1次
         document.getElementById('text').innerText = str;
-      })
+      });
+      // 模拟清除watchEffect，3秒内点击按钮都可触发视力更新，3秒内就不更新了
+      setTimeout(() => {
+        stop();
+      }, 3000);
+
       watch(
         () => count.value,
         (newValue, oldValue) => {
