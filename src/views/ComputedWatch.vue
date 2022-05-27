@@ -100,6 +100,25 @@ export default {
         }
       }
 
+      let watch = (source, cb, options = {}) => {
+        options
+        let getter = () => {
+          return source();
+        }
+        let oldValue;
+        const runner = effect(getter, {
+          schedular: () => {
+            let newValue = runner();
+            if (newValue !== oldValue) {
+              cb(newValue, oldValue);
+              oldValue = newValue;
+            }
+          }
+        })
+
+        oldValue = runner();
+      }
+
       let count = ref(0);
       let computedValue = computed(() => count.value + 3);
 
@@ -112,6 +131,12 @@ export default {
         console.log(str); // 输出1次，说明页面只浸染了1次
         document.getElementById('text').innerText = str;
       })
+      watch(
+        () => count.value,
+        (newValue, oldValue) => {
+          console.log(newValue, oldValue);
+        }
+      )
     }
   },
   mounted() {
